@@ -1,4 +1,5 @@
 import tensorflow as tf
+import cv2
 from tensorflow.examples.tutorials.mnist import input_data
 mnist = input_data.read_data_sets("MNIST_data/",one_hot=True)
 
@@ -26,7 +27,7 @@ correct_prediction = tf.equal(tf.argmax(y, 1), tf.argmax(y_, 1))
 accuracy = tf.reduce_mean(tf.cast(correct_prediction, tf.float32))
 
 tf.global_variables_initializer().run()
-for i in range(5000):
+for i in range(2000):
     batch_xs, batch_ys = mnist.train.next_batch(100)
     # 抓取100批数据，训练后w,b的值可以确定,优化
     train_step.run({x:batch_xs,y_:batch_ys})
@@ -36,3 +37,10 @@ for i in range(5000):
     if (i+1)%200 == 0:
         test_accuracy = accuracy.eval({x:mnist.test.images,y_:mnist.test.labels})
         print("=============================step %d ,test accuracy is %f" % (i+1,test_accuracy))
+weight=sess.run(w)
+for i in range(10):
+    w0=weight[:,i]
+    w0.shape=[28,28]
+    w0=cv2.resize(w0,(280,280))
+    cv2.imshow(str(i),w0)
+cv2.waitKey(0)
